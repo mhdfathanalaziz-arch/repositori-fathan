@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ada Pesan Buat Kamu! ✨</title>
+    <style>
+        /* Menggunakan Google Fonts yang imut dan clean */
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Quicksand:wght@500;700&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #ffe5ec, #ffebf0, #e8dbfc);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+        /* Card Utama */
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border: 4px solid #fff;
+            border-radius: 30px;
+            padding: 40px 30px;
+            width: 90%;
+            max-width: 420px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(255, 182, 193, 0.3);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        /* Gimmick Amplop Terbuka saat Awal */
+        .envelope-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        h1 {
+            font-family: 'Fredoka', sans-serif;
+            color: #ff7597;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        p {
+            color: #6c5ce7;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        /* Area Tombol Interaktif */
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            position: relative;
+            min-height: 60px;
+        }
+
+        button {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.1rem;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+        }
+
+        .btn-yes {
+            background-color: #a8f0d8; /* Pastel Mint */
+            color: #2d6a4f;
+        }
+
+        .btn-yes:hover {
+            transform: scale(1.1) translateY(-3px);
+            background-color: #bbf7e3;
+            box-shadow: 0 12px 20px rgba(168, 240, 216, 0.4);
+        }
+
+        .btn-no {
+            background-color: #ffb3c1; /* Pastel Pink */
+            color: #800f2f;
+            position: absolute;
+            right: 40px;
+            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* Halaman Sukses (Tersembunyi di awal) */
+        .hidden {
+            display: none !important;
+        }
+
+        .success-content h2 {
+            font-family: 'Fredoka', sans-serif;
+            color: #ff7597;
+            margin-bottom: 15px;
+        }
+
+        /* Efek Dekorasi Floating */
+        .floating-heart {
+            position: absolute;
+            font-size: 24px;
+            pointer-events: none;
+            animation: fly Up 4s linear infinite;
+            opacity: 0;
+        }
+
+        /* Animasi */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        /* Responsif untuk HP lama/kecil */
+        @media (max-width: 360px) {
+            h1 { font-size: 1.5rem; }
+            p { font-size: 0.95rem; }
+            button { padding: 10px 22px; font-size: 1rem; }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+
+    <div class="card" id="mainCard">
+        <div id="step1">
+            <div class="envelope-icon">💌</div>
+            <h1>Hai! Ada pesan manis tersembunyi buat kamu...</h1>
+            <p>Aku sengaja simpan di dalam sini. Coba klik tombol di bawah untuk membukanya!</p>
+            <button class="btn-yes" style="position: static;" onclick="openLetter()">Buka Surat ✨</button>
+        </div>
+
+        <div id="step2" class="hidden">
+            <div class="envelope-icon">💖</div>
+            <h1>I Have a Crush on You!</h1>
+            <p>Belakangan ini hari-hariku jadi jauh lebih berwarna sejak ada kamu. kamu mau ga menerima ku</p>
+            
+            <div class="btn-group">
+                <button class="btn-yes" onclick="accepted()">Mau! 🥰</button>
+                <button class="btn-no" id="btnNo" onmouseover="moveButton()" onclick="moveButton()">Ga Mau 😜</button>
+            </div>
+        </div>
+
+        <div id="step3" class="hidden style-success">
+            <div class="envelope-icon">🎉</div>
+            <h2>Yeay! Best Day Ever! 🥳</h2>
+            <p>Terima kasih ya sudah mau buka hati! ✨</p>
+        </div>
+    </div>
+
+    <script>
+        // Fungsi untuk membuka surat awal
+        function openLetter() {
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.remove('hidden');
+        }
+
+        // Gimmick Tombol "Ga Mau" Menghindar
+        function moveButton() {
+            const btnNo = document.getElementById('btnNo');
+            const card = document.getElementById('mainCard');
+            
+            // Batasan agar tombol tidak keluar dari area Card
+            const padding = 20;
+            const maxX = card.clientWidth - btnNo.clientWidth - padding;
+            const maxY = card.clientHeight - btnNo.clientHeight - padding;
+
+            // Hitung posisi acak baru
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * (maxY - 100)) + 50; // Jaga agar tidak terlalu ke atas menutupi teks
+
+            // Mengubah posisi tombol menjadi absolut terhadap card jika belum
+            btnNo.style.position = 'absolute';
+            btnNo.style.left = randomX + 'px';
+            btnNo.style.top = randomY + 'px';
+        }
+
+        // Fungsi saat tombol "Mau" diklik
+        function accepted() {
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step3').classList.remove('hidden');
+
+            // Efek Hujan Konfeti Warna Pastel yang Meriah
+            var duration = 5 * 1000;
+            var end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 3,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#ffb3c1', '#a8f0d8', '#ffdf6d', '#e8dbfc']
+                });
+                confetti({
+                    particleCount: 3,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#ffb3c1', '#a8f0d8', '#ffdf6d', '#e8dbfc']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        }
+    </script>
+</body>
+</html>
